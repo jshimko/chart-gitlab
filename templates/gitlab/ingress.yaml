@@ -1,0 +1,67 @@
+# Gitlab and Docker Registry
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  tls:
+  - hosts:
+    - git.{{ .Values.baseDomain }}
+    - registry.{{ .Values.baseDomain }}
+    secretName: gitlab-tls
+  rules:
+  - host: git.{{ .Values.baseDomain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: 8005
+  - host: registry.{{ .Values.baseDomain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: 8105
+{{- end }}
+---
+# Gitlab Pages
+{{- if and .Values.pagesExternalScheme .Values.pagesExternalDomain}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}-pages
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  {{- if .Values.pagesTlsSecret }}
+  tls:
+  - hosts:
+    - "*.{{ .Values.pagesExternalDomain }}"
+    secretName: {{ .Values.pagesTlsSecret }}
+  {{- end }}
+  rules:
+  - host: "*.{{ .Values.pagesExternalDomain }}"
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: {{ template "fullname" . }}
+            servicePort: 8090
+{{- end }}

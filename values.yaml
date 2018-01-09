@@ -1,0 +1,143 @@
+# baseDomain is the top-most part of the domain. Subdomains will be generated
+# for gitlab and registry
+
+# e.g. *.your-domain.com.	A	300	baseIP
+baseDomain: example.com
+
+# baseIP is an externally provisioned static IP address to use with the LoadBalancer instead of the provisioned one.
+# This generally only applies to GKE
+# baseIP: 1.2.3.4
+
+# Valid values for provider are `aws` or `gke`
+provider: aws
+
+nameOverride: gitlab
+
+# https://hub.docker.com/r/gitlab/gitlab-ce/tags/
+gitlab: ce
+gitlabCEImage: gitlab/gitlab-ce:10.3.3-ce.0
+gitlabEEImage: gitlab/gitlab-ee:10.3.3-ee.0
+
+# ensure all PVC's used by the Gitlab container are in the same zone
+gitlabPVCAvailabilityZone: us-west-2b
+
+gitlabDataAccessMode: ReadWriteOnce
+# gitlabDataStorageSize: 30Gi
+gitlabRegistryAccessMode: ReadWriteOnce
+# gitlabRegistryStorageSize: 30Gi
+gitlabConfigAccessMode: ReadWriteOnce
+# gitlabConfigStorageSize: 1Gi
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "gitlab"
+
+# email:
+#   enabled: false
+#   address: smtp.mailgun.org
+#   port:
+#   authentication: plain
+#   username:
+#   password:
+#   domain:
+#   enableStartTLSAuto: true
+#   from:
+#   replyTo:
+
+initialSharedRunnersRegistrationToken: "<changeme>"
+
+redisImage: redis:3.2.11-alpine
+redisDedicatedStorage: true
+# redisStorageSize: 5Gi
+redisAccessMode: ReadWriteOnce
+
+postgresImage: postgres:9.6.6-alpine
+postgresPassword: "<changeme>"
+postgresDedicatedStorage: true
+postgresAccessMode: ReadWriteOnce
+# postgresStorageSize: 30Gi
+
+# Gitlab pages
+# The following 3 lines are needed to enable gitlab pages.
+# pagesExternalScheme: http
+# pagesExternalDomain: your-pages-domain.com
+# pagesTlsSecret: gitlab-pages-tls # An optional reference to a tls secret to use in pages
+
+## Storage Class Options
+gitlabConfigStorageClass: gitlab-storage
+gitlabDataStorageClass: gitlab-storage
+gitlabRegistryStorageClass: gitlab-storage
+# postgresStorageClass: default
+# redisStorageClass: default
+
+healthCheckToken: "<changeme>"
+
+# Optional, for GitLab EE images only
+# gitlabEELicense: base64-encoded-license
+
+registry:
+  storage:
+    internal: true
+    class: gitlab-storage # only used for local PVC when `internal: true`
+
+    ## External storage driver.
+    ## Set "internal" to false above
+    # driver: s3
+    # s3:
+    #   accessKey:
+    #   secretKey:
+    #   bucket:
+    #   region:
+
+
+# Gitlab Runner sub-chart
+# https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-runner/values.yaml
+gitlab-runner:
+  # https://hub.docker.com/r/gitlab/gitlab-runner/tags/
+  image: gitlab/gitlab-runner:alpine-v10.3.0
+
+  checkInterval: 1
+
+  ## The GitLab Server URL (with protocol) that want to register the runner against
+  ## ref: https://docs.gitlab.com/runner/commands/README.html#gitlab-runner-register
+  ##
+  # gitlabUrl: https://git.base-domain.com/
+
+  # must match initialSharedRunnersRegistrationToken above
+  runnerRegistrationToken: "<changeme>"
+
+  # resources:
+  #   limits:
+  #     memory: 16Gi
+  #     cpu: 4
+  #   requests:
+  #     memory: 500Mi
+  #     cpu: 600m
+
+  runners:
+    privileged: true
+    ## Build Container specific configuration
+    ##
+    # builds:
+    #   cpuLimit: 200m
+    #   memoryLimit: 256Mi
+    #   cpuRequests: 100m
+    #   memoryRequests: 128Mi
+
+    ## Service Container specific configuration
+    ##
+    # services:
+    #   cpuLimit: 200m
+    #   memoryLimit: 256Mi
+    #   cpuRequests: 100m
+    #   memoryRequests: 128Mi
+
+    ## Helper Container specific configuration
+    ##
+    # helpers:
+    #   cpuLimit: 200m
+    #   memoryLimit: 256Mi
+    #   cpuRequests: 100m
+    #   memoryRequests: 128Mi
