@@ -1,26 +1,34 @@
-{{- if (default "" .Values.baseDomain) }}
+{{- if and (default "" .Values.gitlabDomain) (default "" .Values.registryDomain) }}
   It may take several minutes for GitLab to reconfigure.
-    You can watch the status by running `kubectl get deployment -w {{ template "fullname" . }} --namespace {{ .Release.Namespace }}
 
   {{- if .Values.baseIP }}
   Make sure to configure DNS with something like:
-    *.{{ .Values.baseDomain }}	300 IN A {{ .Values.baseIP }}
+
+    {{ .Values.gitlabDomain }}	300 IN A {{ .Values.baseIP }}
+    {{ .Values.registryDomain }}	300 IN A {{ .Values.baseIP }}
   {{- else }}
-  You did not specify a baseIP so one will be assigned for you.
-  It may take a few minutes for the LoadBalancer to be available.
-  Watch the status with: 'kubectl get svc -w --namespace {{ .Release.Namespace }} {{ .Release.Name }}', then:
 
-  export SERVICE_IP=$(kubectl get svc -n {{ .Release.Namespace }} {{ .Release.Name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  You did not specify a baseIP so one will be created for you.
+  Once the load balancer is ready, get the IP or hostname for it with:
 
-  Then make sure to configure DNS with something like:
-    *.{{ .Values.baseDomain }}	300 IN A $SERVICE_IP
+  {{- if (eq .Values.provider "aws") }}
+  kubectl get svc -n {{ .Release.Namespace }} {{ .Release.Name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+  {{- end }}
+  {{- if (eq .Values.provider "gke") }}
+  kubectl get svc -n {{ .Release.Namespace }} {{ .Release.Name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+  {{- end }}
+
+  Then make sure to configure DNS for the following domains to point there.
+
+    {{ .Values.gitlabDomain }}
+    {{ .Values.registryDomain }}
   {{- end }}
 {{- else }}
-####################################################################################################
-## WARNING: You did not specify an baseDomain in your 'helm install' call. ##
-####################################################################################################
+#####################################################################################################
+## WARNING: You did not specify an gitlabDomain and/or registryDomain in your 'helm install' call. ##
+#####################################################################################################
 
 This deployment will be incomplete until you provide these variables:
 
-helm upgrade {{ .Release.Name }} --set baseDomain=example.com,gitlab-runner.gitlabUrl=https://gitlab.example.com chartName
+helm upgrade {{ .Release.Name }} --set gitlabDomain=git.example.com,registryDomain=registry.example.com,gitlab-runner.gitlabUrl=https://git.example.com chartName
 {{- end -}}

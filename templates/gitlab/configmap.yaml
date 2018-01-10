@@ -9,9 +9,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   external_scheme: https
-  external_hostname: git.{{ .Values.baseDomain }}
+  external_hostname: {{ .Values.gitlabDomain }}
   registry_external_scheme: https
-  registry_external_hostname: registry.{{ .Values.baseDomain }}
+  registry_external_hostname: {{ .Values.registryDomain }}
   postgres_user: gitlab
   postgres_db: gitlab_production
   pages_external_scheme: {{ .Values.pagesExternalScheme }}

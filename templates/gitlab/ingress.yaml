@@ -16,18 +16,18 @@ metadata:
 spec:
   tls:
   - hosts:
-    - git.{{ .Values.baseDomain }}
-    - registry.{{ .Values.baseDomain }}
+    - {{ .Values.gitlabDomain }}
+    - {{ .Values.registryDomain }}
     secretName: gitlab-tls
   rules:
-  - host: git.{{ .Values.baseDomain }}
+  - host: {{ .Values.gitlabDomain }}
     http:
       paths:
       - path: /
         backend:
           serviceName: {{ template "fullname" . }}
           servicePort: 8005
-  - host: registry.{{ .Values.baseDomain }}
+  - host: {{ .Values.registryDomain }}
     http:
       paths:
       - path: /
