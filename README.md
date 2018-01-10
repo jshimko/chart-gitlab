@@ -24,7 +24,7 @@ cp nginx-ingress.values.yaml nginx-ingress.custom.values.yaml
 helm install --name nginx-ingress-gitlab --namespace gitlab -f ./nginx-ingress.custom.values.yaml stable/nginx-ingress
 
 # Get the load balancer (ELB) URL
-kubectl describe svc -n gitlab nginx-ingress-gitlab-nginx-ingress-controller | grep "LoadBalancer Ingress"
+kubectl describe svc -n gitlab nginx-ingress-gitlab-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 
 # point git.yourdomain.com and registry.yourdomain.com at that ELB address
 ```
