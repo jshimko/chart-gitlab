@@ -92,6 +92,8 @@ registry:
 # Gitlab Runner sub-chart
 # https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-runner/values.yaml
 gitlab-runner:
+  enabled: false
+
   # https://hub.docker.com/r/gitlab/gitlab-runner/tags/
   image: gitlab/gitlab-runner:alpine-v10.3.0
 
