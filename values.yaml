@@ -87,6 +87,16 @@ registry:
     #   bucket:
     #   region:
 
+# Backup to remote cloud storage
+# https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage
+backups:
+  storage:
+    enabled: false
+    provider: AWS
+    region: us-west-2
+    # accessKeyId:
+    # accessKeySecret:
+
 
 # Gitlab Runner sub-chart
 # https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-runner/values.yaml

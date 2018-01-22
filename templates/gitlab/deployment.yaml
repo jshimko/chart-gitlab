@@ -145,6 +145,16 @@ spec:
             manage_accounts['enable'] = true
             manage_storage_directories['manage_etc'] = false
 
+            {{- if .Values.backups.storage.enabled }}
+            gitlab_rails['backup_upload_connection'] = {
+              'provider' => '{{ .Values.backups.storage.provider }}',
+              'region' => '{{ .Values.backups.storage.region }}',
+              'aws_access_key_id' => '{{ .Values.backups.storage.accessKeyId }}',
+              'aws_secret_access_key' => '{{ .Values.backups.storage.accessKeySecret }}'
+            }
+            gitlab_rails['backup_upload_remote_directory'] = '{{ .Values.backups.storage.bucket }}'
+            {{- end }}
+
             if ENV['PAGES_EXTERNAL_SCHEME'] && ENV['PAGES_EXTERNAL_DOMAIN']
               pages_external_url "#{ENV['PAGES_EXTERNAL_SCHEME']}://#{ENV['PAGES_EXTERNAL_DOMAIN']}/"
               gitlab_pages['enable'] = true
