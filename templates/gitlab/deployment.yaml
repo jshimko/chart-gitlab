@@ -17,11 +17,7 @@ spec:
     spec:
       containers:
       - name: gitlab
-        {{- if eq .Values.gitlab "ee" }}
-        image: {{ .Values.gitlabEEImage }}
-        {{- else }}
-        image: {{ .Values.gitlabCEImage }}
-        {{- end }}
+        image: {{ .Values.gitlab.image }}
         imagePullPolicy: IfNotPresent
         command: ["/bin/bash", "-c",
           "sed -i \"s/environment ({'GITLAB_ROOT_PASSWORD' => initial_root_password }) if initial_root_password/environment ({'GITLAB_ROOT_PASSWORD' => initial_root_password, 'GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN' => node['gitlab']['gitlab-rails']['initial_shared_runners_registration_token'] })/g\" /opt/gitlab/embedded/cookbooks/gitlab/recipes/database_migrations.rb && exec /assets/wrapper"]

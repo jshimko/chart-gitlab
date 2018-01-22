@@ -10,10 +10,9 @@ provider: aws
 
 nameOverride: gitlab
 
-# https://hub.docker.com/r/gitlab/gitlab-ce/tags/
-gitlab: ce
-gitlabCEImage: gitlab/gitlab-ce:10.3.3-ce.0
-gitlabEEImage: gitlab/gitlab-ee:10.3.3-ee.0
+gitlab:
+  # https://hub.docker.com/r/gitlab/gitlab-ee/tags/
+  image: gitlab/gitlab-ee:10.3.3-ee.0
 
 # ensure all PVC's used by the Gitlab container are in the same zone
 gitlabPVCAvailabilityZone: us-west-2b
