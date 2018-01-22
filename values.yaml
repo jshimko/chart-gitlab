@@ -14,6 +14,16 @@ gitlab:
   # https://hub.docker.com/r/gitlab/gitlab-ee/tags/
   image: gitlab/gitlab-ee:10.4.0-ee.0
 
+  ## Resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1
+    limits:
+      memory: 4Gi
+      cpu: 2
+
   # Node affinity and taint tolerations for pods
   scheduling:
     affinity:
@@ -64,6 +74,17 @@ redisDedicatedStorage: true
 redisAccessMode: ReadWriteOnce
 
 redis:
+
+  ## Resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 500m
+    limits:
+      memory: 512Mi
+      cpu: 1
+
   # Configure Node affinity and taint tolerations for pods
   scheduling:
     affinity:
@@ -80,6 +101,17 @@ redis:
 
 
 postgres:
+
+  ## Resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 500m
+    limits:
+      memory: 1Gi
+      cpu: 2
+
   # Configure Node affinity and taint tolerations for pods
   scheduling:
     affinity:

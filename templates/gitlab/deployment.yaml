@@ -21,6 +21,16 @@ spec:
         imagePullPolicy: IfNotPresent
         command: ["/bin/bash", "-c",
           "sed -i \"s/environment ({'GITLAB_ROOT_PASSWORD' => initial_root_password }) if initial_root_password/environment ({'GITLAB_ROOT_PASSWORD' => initial_root_password, 'GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN' => node['gitlab']['gitlab-rails']['initial_shared_runners_registration_token'] })/g\" /opt/gitlab/embedded/cookbooks/gitlab/recipes/database_migrations.rb && exec /assets/wrapper"]
+
+        # resource requests/limits
+        resources:
+          requests:
+            memory: {{ .Values.gitlab.resources.requests.memory }}
+            cpu: {{ .Values.gitlab.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.gitlab.resources.limits.memory }}
+            cpu: {{ .Values.gitlab.resources.limits.cpu }}
+
         env:
         - name: GITLAB_EXTERNAL_SCHEME
           valueFrom:

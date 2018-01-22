@@ -41,6 +41,15 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
 
+        # resource requests/limits
+        resources:
+          requests:
+            memory: {{ .Values.redis.resources.requests.memory }}
+            cpu: {{ .Values.redis.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.redis.resources.limits.memory }}
+            cpu: {{ .Values.redis.resources.limits.cpu }}          
+
       # Node affinity and tolerations
       {{- if .Values.redis.scheduling.affinity }}
       {{- if .Values.redis.scheduling.affinity.node }}

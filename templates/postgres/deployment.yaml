@@ -70,6 +70,15 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
 
+        # resource requests/limits
+        resources:
+          requests:
+            memory: {{ .Values.postgres.resources.requests.memory }}
+            cpu: {{ .Values.postgres.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.postgres.resources.limits.memory }}
+            cpu: {{ .Values.postgres.resources.limits.cpu }}          
+
       # Node affinity and tolerations
       {{- if .Values.postgres.scheduling.affinity }}
       {{- if .Values.postgres.scheduling.affinity.node }}
