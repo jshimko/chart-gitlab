@@ -12,7 +12,7 @@ nameOverride: gitlab
 
 gitlab:
   # https://hub.docker.com/r/gitlab/gitlab-ee/tags/
-  image: gitlab/gitlab-ee:10.3.3-ee.0
+  image: gitlab/gitlab-ee:10.4.0-ee.0
 
   # Node affinity and taint tolerations for pods
   scheduling:
