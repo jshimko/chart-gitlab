@@ -236,6 +236,38 @@ spec:
             port: 8005
           initialDelaySeconds: 15
           timeoutSeconds: 1
+
+      # Node affinity and tolerations
+      {{- if .Values.gitlab.scheduling.affinity }}
+      {{- if .Values.gitlab.scheduling.affinity.node }}
+      {{- if .Values.gitlab.scheduling.affinity.node.labels }}
+      affinity:
+        nodeAffinity:
+          {{ .Values.gitlab.scheduling.affinity.node.type }}:
+            nodeSelectorTerms:
+            - matchExpressions:
+                {{- range .Values.gitlab.scheduling.affinity.node.labels }}
+                - key: {{ .key }}
+                  operator: {{ .operator }}
+                  values:
+                  {{- range .values }}
+                  - {{ . }}
+                  {{- end }}
+                {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .Values.gitlab.scheduling.tolerations }}
+      tolerations:
+      {{- range .Values.gitlab.scheduling.tolerations }}
+      - key: {{ .key }}
+        value: {{ .value }}
+        operator: Equal
+        effect: {{ .effect }}
+      {{- end }}
+      {{- end }}
+
       volumes:
       - name: data
         persistentVolumeClaim:

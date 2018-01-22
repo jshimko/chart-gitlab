@@ -40,6 +40,38 @@ spec:
             - ping
           initialDelaySeconds: 5
           timeoutSeconds: 1
+
+      # Node affinity and tolerations
+      {{- if .Values.redis.scheduling.affinity }}
+      {{- if .Values.redis.scheduling.affinity.node }}
+      {{- if .Values.redis.scheduling.affinity.node.labels }}
+      affinity:
+        nodeAffinity:
+          {{ .Values.redis.scheduling.affinity.node.type }}:
+            nodeSelectorTerms:
+            - matchExpressions:
+                {{- range .Values.redis.scheduling.affinity.node.labels }}
+                - key: {{ .key }}
+                  operator: {{ .operator }}
+                  values:
+                  {{- range .values }}
+                  - {{ . }}
+                  {{- end }}
+                {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .Values.redis.scheduling.tolerations }}
+      tolerations:
+      {{- range .Values.redis.scheduling.tolerations }}
+      - key: {{ .key }}
+        value: {{ .value }}
+        operator: Equal
+        effect: {{ .effect }}
+      {{- end }}
+      {{- end }}
+
       volumes:
       - name: data
         persistentVolumeClaim:

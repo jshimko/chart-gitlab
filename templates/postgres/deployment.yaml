@@ -69,6 +69,38 @@ spec:
             - postgres
           initialDelaySeconds: 5
           timeoutSeconds: 1
+
+      # Node affinity and tolerations
+      {{- if .Values.postgres.scheduling.affinity }}
+      {{- if .Values.postgres.scheduling.affinity.node }}
+      {{- if .Values.postgres.scheduling.affinity.node.labels }}
+      affinity:
+        nodeAffinity:
+          {{ .Values.postgres.scheduling.affinity.node.type }}:
+            nodeSelectorTerms:
+            - matchExpressions:
+                {{- range .Values.postgres.scheduling.affinity.node.labels }}
+                - key: {{ .key }}
+                  operator: {{ .operator }}
+                  values:
+                  {{- range .values }}
+                  - {{ . }}
+                  {{- end }}
+                {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .Values.postgres.scheduling.tolerations }}
+      tolerations:
+      {{- range .Values.postgres.scheduling.tolerations }}
+      - key: {{ .key }}
+        value: {{ .value }}
+        operator: Equal
+        effect: {{ .effect }}
+      {{- end }}
+      {{- end }}
+
       volumes:
       - name: data
         persistentVolumeClaim:

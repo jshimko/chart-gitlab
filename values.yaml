@@ -14,6 +14,20 @@ gitlab:
   # https://hub.docker.com/r/gitlab/gitlab-ee/tags/
   image: gitlab/gitlab-ee:10.3.3-ee.0
 
+  # Node affinity and taint tolerations for pods
+  scheduling:
+    affinity:
+      node:
+        type: requiredDuringSchedulingIgnoredDuringExecution
+        labels:
+        # - key: reactioncommerce.com/app
+        #   operator: In
+        #   values: ["launchdock.io"]
+    tolerations:
+    # - key: launchdock.io/dedicated
+    #   value: launchdock-core
+    #   effect: NoSchedule
+
 # ensure all PVC's used by the Gitlab container are in the same zone
 gitlabPVCAvailabilityZone: us-west-2b
 
@@ -48,6 +62,37 @@ redisImage: redis:3.2.11-alpine
 redisDedicatedStorage: true
 # redisStorageSize: 5Gi
 redisAccessMode: ReadWriteOnce
+
+redis:
+  # Configure Node affinity and taint tolerations for pods
+  scheduling:
+    affinity:
+      node:
+        type: requiredDuringSchedulingIgnoredDuringExecution
+        labels:
+        # - key: reactioncommerce.com/app
+        #   operator: In
+        #   values: ["launchdock.io"]
+    tolerations:
+    # - key: launchdock.io/dedicated
+    #   value: launchdock-core
+    #   effect: NoSchedule
+
+
+postgres:
+  # Configure Node affinity and taint tolerations for pods
+  scheduling:
+    affinity:
+      node:
+        type: requiredDuringSchedulingIgnoredDuringExecution
+        labels:
+        # - key: reactioncommerce.com/app
+        #   operator: In
+        #   values: ["launchdock.io"]
+    tolerations:
+    # - key: launchdock.io/dedicated
+    #   value: launchdock-core
+    #   effect: NoSchedule
 
 postgresImage: postgres:9.6.6-alpine
 postgresPassword: "<changeme>"
