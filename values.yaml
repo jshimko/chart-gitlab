@@ -1,6 +1,6 @@
 # Domains
-gitlabDomain: preprod.git.launchdock.io
-registryDomain: preprod.registry.launchdock.io
+gitlabDomain: git.example.com
+registryDomain: registry.example.com
 
 # baseIP is an externally provisioned static IP address to use with the LoadBalancer instead of the provisioned one.
 # baseIP: 1.2.3.4
