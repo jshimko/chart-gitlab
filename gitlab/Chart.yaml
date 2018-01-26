@@ -1,7 +1,7 @@
 apiVersion: v1
 name: gitlab
 description: GitLab Omnibus all-in-one bundle
-version: 1.0.0
+version: 1.0.1
 tillerVersion: ">=2.5.0"
 keywords:
 - git
