@@ -106,8 +106,10 @@ spec:
 
             registry_nginx['enable'] = false
             registry['registry_http_addr'] = '0.0.0.0:8105'
+            {{- if ne .Values.registry.storage.internal true }}
             {{- if eq .Values.registry.storage.driver "s3" }}
             registry['storage'] = { 's3' => { 'accesskey' => '{{ .Values.registry.storage.s3.accessKey }}', 'secretkey' => '{{ .Values.registry.storage.s3.secretKey }}', 'bucket' => '{{ .Values.registry.storage.s3.bucket }}', 'region' => '{{ .Values.registry.storage.s3.region }}' } }
+            {{- end }}
             {{- end }}
 
             postgresql['enable'] = false
@@ -119,6 +121,7 @@ spec:
             redis['enable'] = false
             gitlab_rails['redis_host'] = '{{ template "redis.fullname" . }}'
 
+            {{- if .Values.email.enabled }}
             {{- if .Values.email.username }}
             gitlab_rails['smtp_user_name'] = "{{ .Values.email.username }}"
             {{- end }}
@@ -150,6 +153,7 @@ spec:
             gitlab_rails['smtp_enable_starttls_auto'] = true
             {{- else }}
             gitlab_rails['smtp_enable_starttls_auto'] = false
+            {{- end }}
             {{- end }}
 
             manage_accounts['enable'] = true
