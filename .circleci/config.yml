@@ -41,6 +41,9 @@ workflows:
           requires:
             - lint
           filters:
+            # don't deploy on plain branch pushes
+            branches:
+              ignore: /.*/
             tags:
               # only run deploy on tags with format: 1.2.3
               only: /^[0-9]+\.[0-9]+\.[0-9]/
