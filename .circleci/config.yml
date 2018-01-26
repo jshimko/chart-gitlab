@@ -34,16 +34,19 @@ jobs:
 
 workflows:
   version: 2
-  build_and_deploy:
+  lint_and_deploy:
     jobs:
-      - lint
+      - lint:
+        filters:
+          tags:
+            only: /.*/
       - deploy:
           requires:
             - lint
           filters:
+            # only run deploy on tags with format: 1.2.3
+            tags:
+              only: /^[0-9]+\.[0-9]+\.[0-9]/
             # don't deploy on plain branch pushes
             branches:
               ignore: /.*/
-            tags:
-              # only run deploy on tags with format: 1.2.3
-              only: /^[0-9]+\.[0-9]+\.[0-9]/
