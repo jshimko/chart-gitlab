@@ -1,0 +1,46 @@
+# The following environment variables are required by the Helm-S3 plugin for deployment.
+# They should be set in the CircleCI dashboard settings for this project.
+#
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
+# AWS_DEFAULT_REGION
+
+version: 2
+
+jobs:
+  # lint the chart
+  lint:
+    docker:
+      - image: reactioncommerce/kube-helm:1.0.0
+
+    environment:
+      CHART_DIR: gitlab
+
+    steps:
+      - checkout
+      - run: .circle/lint.sh
+
+  # build and deploy to S3 chart repo
+  deploy:
+    docker:
+      - image: reactioncommerce/kube-helm:1.0.0
+
+    environment:
+      CHART_DIR: gitlab
+
+    steps:
+      - checkout
+      - run: .circle/deploy.sh
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - lint
+      - deploy:
+          requires:
+            - lint
+          filters:
+            tags:
+              # only run deploy on tags with format: 1.2.3
+              only: /^[0-9]+\.[0-9]+\.[0-9]/
