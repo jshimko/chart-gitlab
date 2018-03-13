@@ -113,7 +113,7 @@ postgres:
       memory: 2Gi
       cpu: 500m
     limits:
-      memory: 1Gi
+      memory: 2Gi
       cpu: 2
 
   # Configure Node affinity and taint tolerations for pods
